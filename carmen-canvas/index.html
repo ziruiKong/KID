@@ -1,0 +1,1499 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>K.I.D. — Kongzirui Individual Development</title>
+  <meta name="description" content="K.I.D. 是孔子睿的个人发展网站，记录独立成长、关键决策与持续思考。">
+  <style>
+    :root {
+      --ink: #111827;
+      --navy: #0b1831;
+      --blue: #006eb8;
+      --red: #a72d2d;
+      --muted: #66717d;
+      --line: #dfe5ea;
+      --soft: #f6f8fa;
+      --paper: #ffffff;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: Inter, "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+      letter-spacing: 0;
+    }
+
+    button, input, select, textarea { font: inherit; }
+    button { cursor: pointer; }
+    a { color: inherit; }
+
+    .site-header {
+      position: fixed;
+      inset: 0 0 auto 0;
+      z-index: 30;
+      border-bottom: 0;
+      background: transparent;
+      padding-top: 48px;
+      padding-bottom: 18px;
+      transition: background 260ms ease, box-shadow 260ms ease, backdrop-filter 260ms ease;
+    }
+
+    .site-header.scrolled {
+      background: rgba(201, 161, 95, 0.9);
+      box-shadow: 0 16px 50px rgba(0, 0, 0, 0.16);
+      backdrop-filter: blur(14px) saturate(120%);
+      -webkit-backdrop-filter: blur(14px) saturate(120%);
+    }
+
+    .header-inner {
+      position: relative;
+      max-width: none;
+      margin: 0 auto;
+      padding: 0 clamp(42px, 4vw, 80px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 28px;
+      width: 100%;
+    }
+
+    .brand {
+      position: absolute;
+      left: 50%;
+      top: -8px;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 0;
+      min-width: 0;
+      text-decoration: none;
+      z-index: 12;
+    }
+
+    .brand img {
+      display: none;
+      width: 54px;
+      height: auto;
+      filter: drop-shadow(0 8px 22px rgba(96, 165, 250, 0.22));
+    }
+
+    .brand-text {
+      color: #fff7ed;
+      display: grid;
+      gap: 5px;
+      font-family: Georgia, "Times New Roman", "Noto Serif SC", serif;
+      line-height: 1;
+      font-weight: 400;
+      white-space: normal;
+      text-transform: uppercase;
+      text-shadow: 0 10px 34px rgba(0, 0, 0, 0.32);
+    }
+
+    .brand .brand-mark {
+      display: block;
+      width: 88px;
+      height: auto;
+      object-fit: contain;
+      object-position: left center;
+      mix-blend-mode: normal;
+      filter: none;
+      opacity: 1;
+    }
+
+    .brand-caption {
+      display: block;
+      font-family: Inter, "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+      font-size: 10px;
+      line-height: 1;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      opacity: 0.94;
+    }
+
+    .menu-trigger {
+      border: 0;
+      background: transparent;
+      color: #fff7ed;
+      padding: 0;
+      text-shadow: 0 0 14px rgba(255, 247, 237, 0.16);
+      transition: opacity 180ms ease, transform 240ms cubic-bezier(.2,.8,.2,1);
+    }
+
+    .site-header.scrolled .menu-trigger,
+    .site-header.scrolled .social-links a {
+      color: #15120d !important;
+      text-shadow: none;
+    }
+
+    .menu-trigger:hover {
+      opacity: 0.78;
+      transform: translateY(-1px);
+    }
+
+    .menu-trigger svg {
+      width: 20px;
+      height: 20px;
+      display: block;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .menu-panel {
+      position: absolute;
+      left: clamp(42px, 4vw, 80px);
+      top: -40px;
+      z-index: 40;
+      display: grid;
+      grid-template-rows: 1fr auto;
+      width: min(318px, calc(100vw - 48px));
+      min-height: 450px;
+      padding: 18px 20px 18px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 247, 237, 0.22);
+      background:
+        linear-gradient(135deg, rgba(255, 247, 237, 0.18), rgba(255, 247, 237, 0.07)),
+        rgba(17, 14, 11, 0.2);
+      color: #fff7ed;
+      box-shadow: 0 30px 90px rgba(0, 0, 0, 0.28);
+      backdrop-filter: blur(18px) saturate(128%);
+      -webkit-backdrop-filter: blur(18px) saturate(128%);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transform: translate3d(0, 10px, 0) scale(0.985);
+      transform-origin: top left;
+      transition:
+        opacity 240ms ease,
+        visibility 240ms ease,
+        transform 360ms cubic-bezier(.16, 1, .3, 1);
+    }
+
+    .menu-wrap:hover .menu-panel,
+    .menu-wrap:focus-within .menu-panel {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+
+    .menu-list {
+      display: grid;
+      align-content: start;
+      gap: 6px;
+      margin-top: 0;
+    }
+
+    .menu-list a {
+      color: rgba(255, 247, 237, 0.48);
+      text-decoration: none;
+      font-family: Georgia, "Times New Roman", "Noto Serif SC", serif;
+      font-size: 21px;
+      line-height: 1.08;
+      transition: color 180ms ease, transform 180ms ease;
+    }
+
+    .menu-list a:hover {
+      color: rgba(255, 247, 237, 0.96);
+      transform: translateX(4px);
+    }
+
+    .menu-time {
+      color: rgba(255, 247, 237, 0.82);
+      font-size: 22px;
+      line-height: 1.05;
+      letter-spacing: -0.04em;
+    }
+
+    .menu-time .muted {
+      color: rgba(255, 247, 237, 0.5);
+    }
+
+    .social-links {
+      min-width: 220px;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 26px;
+      padding-top: 6px;
+    }
+
+    .social-links a,
+    .social-links button {
+      border: 0;
+      background: transparent;
+      padding: 0;
+      color: #fff7ed;
+      text-decoration: none;
+      font-size: 15px;
+      font-weight: 800;
+      text-shadow: 0 10px 34px rgba(0, 0, 0, 0.3);
+    }
+
+    .social-links svg {
+      width: 18px;
+      height: 18px;
+      display: block;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .splash {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      min-height: 100vh;
+      overflow: hidden;
+      display: flex;
+      align-items: flex-end;
+      padding: 130px clamp(42px, 4vw, 80px) 0;
+      background:
+        linear-gradient(90deg, rgba(3, 10, 24, 0.48), rgba(3, 10, 24, 0.06) 44%, rgba(2, 8, 20, 0.3)),
+        linear-gradient(0deg, rgba(20, 8, 4, 0.36), rgba(1, 7, 18, 0.02) 42%, rgba(1, 7, 18, 0.18)),
+        url("assets/kid-hero-bg-studio.png") center / cover no-repeat,
+        linear-gradient(115deg, #061126 0%, #0b1831 45%, #020814 100%);
+      color: #fff7ed;
+      border-bottom: 0;
+      box-shadow: none;
+    }
+
+    .splash::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 77% 22%, rgba(56, 189, 248, 0.22), transparent 21%),
+        linear-gradient(90deg, rgba(1, 8, 20, 0.2), rgba(3, 12, 28, 0.02) 48%, rgba(1, 8, 20, 0.22)),
+        repeating-linear-gradient(0deg, rgba(255,255,255,0.018), rgba(255,255,255,0.018) 1px, transparent 1px, transparent 4px);
+      pointer-events: none;
+      animation: atmosphericShift 12s ease-in-out infinite alternate;
+    }
+
+    .splash::after {
+      display: none;
+    }
+
+    .splash-content {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      animation: heroSettle 900ms cubic-bezier(.2,.8,.2,1) both;
+    }
+
+    .welcome-panel {
+      position: absolute;
+      right: clamp(28px, 3.6vw, 64px);
+      top: 15%;
+      z-index: 2;
+      width: min(420px, 29vw);
+      min-height: 430px;
+      padding: 34px 32px 28px;
+      border: 1px solid rgba(255, 247, 237, 0.24);
+      background:
+        linear-gradient(135deg, rgba(255, 247, 237, 0.16), rgba(255, 247, 237, 0.06)),
+        rgba(20, 16, 12, 0.18);
+      color: #fff7ed;
+      backdrop-filter: blur(12px) saturate(118%);
+      -webkit-backdrop-filter: blur(12px) saturate(118%);
+      box-shadow: 0 28px 90px rgba(0, 0, 0, 0.22);
+    }
+
+    .welcome-panel h2 {
+      margin: 0;
+      max-width: 350px;
+      font-size: clamp(27px, 2.4vw, 42px);
+      line-height: 1.12;
+      font-weight: 850;
+      letter-spacing: -0.035em;
+      text-transform: uppercase;
+    }
+
+    .welcome-panel .dash {
+      display: block;
+      margin: 112px 0 34px;
+      border-top: 2px dotted rgba(255, 247, 237, 0.78);
+    }
+
+    .welcome-panel p {
+      margin: 0 0 0 auto;
+      max-width: 280px;
+      text-align: right;
+      font-size: clamp(18px, 1.45vw, 26px);
+      line-height: 1.55;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+    }
+
+    .quick-panel {
+      position: absolute;
+      left: clamp(28px, 3.6vw, 64px);
+      top: 15%;
+      z-index: 2;
+      width: min(420px, 29vw);
+      min-height: 430px;
+      padding: 34px 32px 28px;
+      border: 0;
+      background: transparent;
+      color: #fff7ed;
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+      box-shadow: none;
+    }
+
+    .quick-panel h2 {
+      display: none;
+      margin: 0 0 48px;
+      font-size: clamp(25px, 2.15vw, 38px);
+      line-height: 1.12;
+      font-weight: 850;
+      letter-spacing: -0.04em;
+      text-transform: uppercase;
+    }
+
+    .quick-list {
+      display: grid;
+      margin: 86px 0 0;
+      padding: 0;
+      list-style: none;
+      border-top: 1px solid rgba(255, 247, 237, 0.2);
+    }
+
+    .quick-list a {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 18px;
+      min-height: 72px;
+      border-bottom: 1px solid rgba(255, 247, 237, 0.2);
+      color: rgba(255, 247, 237, 0.9);
+      text-decoration: none;
+      font-size: clamp(18px, 1.45vw, 25px);
+      line-height: 1.08;
+      font-weight: 750;
+      letter-spacing: -0.045em;
+      transition: color 200ms ease, transform 240ms cubic-bezier(.2,.8,.2,1);
+    }
+
+    .quick-list a::after {
+      content: "↗";
+      font-size: 26px;
+      line-height: 1;
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    .quick-list a:hover {
+      color: #ffffff;
+      transform: translateX(5px);
+    }
+
+    .splash-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(22px, 4vw, 72px);
+      white-space: nowrap;
+      perspective: 1000px;
+      transform: translateX(-13vw);
+    }
+
+    .splash-title {
+      position: relative;
+      margin: 0;
+      color: #c9a15f;
+      font-family: Georgia, "Times New Roman", "Noto Serif SC", serif;
+      font-size: clamp(96px, 14.2vw, 242px);
+      line-height: 0.68;
+      font-style: italic;
+      font-weight: 500;
+      letter-spacing: -0.055em;
+      text-transform: none;
+      text-shadow:
+        0 1px 0 rgba(255, 246, 219, 0.36),
+        0 18px 50px rgba(0, 0, 0, 0.36),
+        0 0 42px rgba(201, 161, 95, 0.26);
+      transform: translateY(0) rotateX(0deg);
+      transition: color 260ms ease, transform 260ms ease, letter-spacing 260ms ease, text-shadow 260ms ease;
+      cursor: default;
+      backdrop-filter: none;
+    }
+
+    .splash-title::after {
+      content: "";
+      position: absolute;
+      left: 0.04em;
+      right: 0.04em;
+      bottom: -0.08em;
+      height: 4px;
+      background: linear-gradient(90deg, transparent, rgba(201, 161, 95, 0.9), transparent);
+      transform: scaleX(0);
+      transform-origin: center;
+      transition: transform 260ms ease;
+    }
+
+    .splash-title:hover {
+      color: #e2bf7a;
+      letter-spacing: -0.02em;
+      transform: translateY(-10px) rotateX(6deg);
+      text-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.54),
+        0 28px 70px rgba(0, 0, 0, 0.5);
+    }
+
+    .splash-title:hover::after {
+      transform: scaleX(1);
+    }
+
+    @keyframes atmosphericShift {
+      from { opacity: 0.78; transform: translate3d(-0.35%, -0.25%, 0) scale(1.002); }
+      to { opacity: 1; transform: translate3d(0.35%, 0.25%, 0) scale(1.006); }
+    }
+
+    @keyframes heroSettle {
+      from { opacity: 0; transform: translateY(22px); filter: blur(10px); }
+      to { opacity: 1; transform: translateY(0); filter: blur(0); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .splash::before,
+      .splash-content {
+        animation: none;
+      }
+      .nav a,
+      .lang-button,
+      .splash-title {
+        transition: none;
+      }
+    }
+
+    main {
+      position: relative;
+      z-index: 3;
+      max-width: none;
+      margin: 100vh 0 0;
+      padding: 54px 42px 70px;
+      background: var(--paper);
+      box-shadow: 0 -28px 90px rgba(0, 0, 0, 0.18);
+    }
+
+    main > * {
+      max-width: 1320px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 360px;
+      gap: 70px;
+      align-items: end;
+      padding-bottom: 42px;
+      border-bottom: 2px solid var(--navy);
+    }
+
+    .eyebrow {
+      margin: 0 0 14px;
+      color: var(--red);
+      font-size: 13px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .hero h1 {
+      margin: 0;
+      max-width: 890px;
+      color: var(--navy);
+      font-family: Georgia, "Times New Roman", "Noto Serif SC", serif;
+      font-size: clamp(42px, 6vw, 76px);
+      line-height: 0.98;
+      font-weight: 500;
+      letter-spacing: 0;
+    }
+
+    .hero p {
+      margin: 24px 0 0;
+      max-width: 760px;
+      color: #313a44;
+      font-size: 18px;
+      line-height: 1.72;
+    }
+
+    .hero-card {
+      border-left: 1px solid var(--line);
+      padding-left: 30px;
+    }
+
+    .hero-card h2 {
+      margin: 0 0 14px;
+      color: var(--navy);
+      font-size: 22px;
+      font-weight: 600;
+    }
+
+    .hero-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    .search-row {
+      display: grid;
+      grid-template-columns: minmax(260px, 1fr) 220px 130px;
+      gap: 12px;
+      margin: 34px 0 30px;
+    }
+
+    .field, .select, textarea {
+      width: 100%;
+      min-height: 46px;
+      border: 1px solid #5c6670;
+      border-radius: 0;
+      background: #fff;
+      color: var(--ink);
+      padding: 0 13px;
+      outline: none;
+    }
+
+    textarea {
+      min-height: 110px;
+      padding-top: 12px;
+      resize: vertical;
+    }
+
+    .button, .subtle-button, .danger-button, .tiny-button {
+      min-height: 42px;
+      border-radius: 0;
+      border: 1px solid var(--blue);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 0 16px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .button {
+      background: var(--blue);
+      color: #fff;
+    }
+
+    .subtle-button {
+      background: #fff;
+      color: var(--blue);
+    }
+
+    .danger-button {
+      border-color: #c7a0a0;
+      background: #fff7f7;
+      color: var(--red);
+    }
+
+    .tiny-button {
+      min-height: 30px;
+      padding: 0 10px;
+      background: #fff;
+      color: var(--blue);
+      font-size: 12px;
+    }
+
+    .modules {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      margin: 0 0 52px;
+    }
+
+    .module-link {
+      padding: 22px 24px;
+      min-height: 150px;
+      border-right: 1px solid var(--line);
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: #fff;
+    }
+
+    .module-link:last-child { border-right: 0; }
+    .module-link:hover { background: var(--soft); }
+
+    .module-link b {
+      color: var(--navy);
+      font-family: Georgia, "Times New Roman", "Noto Serif SC", serif;
+      font-size: 25px;
+      font-weight: 500;
+    }
+
+    .module-link span {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 390px;
+      gap: 52px;
+      align-items: start;
+    }
+
+    .section {
+      margin-bottom: 54px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 18px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 8px;
+    }
+
+    .section-header h2 {
+      margin: 0;
+      color: var(--navy);
+      font-family: Georgia, "Times New Roman", "Noto Serif SC", serif;
+      font-size: 30px;
+      font-weight: 500;
+    }
+
+    .section-header span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .record-list {
+      display: grid;
+      gap: 0;
+    }
+
+    .record {
+      padding: 24px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .record h3 {
+      margin: 0 0 8px;
+      color: var(--blue);
+      font-family: Georgia, "Times New Roman", "Noto Serif SC", serif;
+      font-size: 25px;
+      font-weight: 500;
+      line-height: 1.28;
+    }
+
+    .meta {
+      color: #4c5661;
+      font-size: 14px;
+      line-height: 1.55;
+      margin-bottom: 10px;
+    }
+
+    .summary {
+      margin: 0;
+      color: #28313a;
+      line-height: 1.72;
+      font-size: 15px;
+    }
+
+    .tag-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 13px;
+    }
+
+    .tag {
+      border-left: 3px solid #8494a2;
+      background: #f2f5f7;
+      color: #3e4852;
+      padding: 5px 8px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .record-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
+
+    .side-panel {
+      border-left: 1px solid var(--line);
+      padding-left: 30px;
+    }
+
+    .panel {
+      padding: 0 0 28px;
+      margin-bottom: 28px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .panel-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .panel-title h2 {
+      margin: 0;
+      color: var(--navy);
+      font-family: Georgia, "Times New Roman", "Noto Serif SC", serif;
+      font-size: 24px;
+      font-weight: 500;
+    }
+
+    .compact-list {
+      display: grid;
+      gap: 12px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .compact-item {
+      background: var(--soft);
+      border-left: 3px solid #6e7e8d;
+      padding: 12px 13px;
+    }
+
+    .compact-item b {
+      display: block;
+      color: var(--ink);
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .compact-item span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.55;
+      margin-top: 4px;
+    }
+
+    .compact-item input {
+      margin-right: 8px;
+      accent-color: var(--blue);
+    }
+
+    .database-bar {
+      border-top: 1px solid var(--line);
+      padding-top: 18px;
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(8, 16, 26, 0.56);
+    }
+
+    .modal.open { display: flex; }
+
+    .dialog {
+      width: min(760px, 100%);
+      max-height: 88vh;
+      overflow: auto;
+      background: #fff;
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.18);
+    }
+
+    .dialog-header, .dialog-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--line);
+      background: #fff;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+
+    .dialog-footer {
+      border-top: 1px solid var(--line);
+      border-bottom: 0;
+      bottom: 0;
+      top: auto;
+    }
+
+    .dialog h2 {
+      margin: 0;
+      color: var(--navy);
+      font-size: 20px;
+    }
+
+    .dialog-body { padding: 18px; }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 13px;
+    }
+
+    .form-row { display: grid; gap: 6px; }
+    .form-row.full { grid-column: 1 / -1; }
+    .form-row label { color: var(--muted); font-size: 13px; font-weight: 700; }
+
+    .toast {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      display: none;
+      z-index: 80;
+      max-width: min(360px, calc(100vw - 36px));
+      padding: 12px 14px;
+      background: var(--navy);
+      color: #fff;
+      font-size: 14px;
+    }
+
+    .toast.show { display: block; }
+
+    @media (max-width: 980px) {
+      .header-inner, main { padding-left: 20px; padding-right: 20px; }
+      .header-inner { align-items: center; }
+      .brand { min-width: 0; }
+      .brand-text { font-size: 16px; }
+      .social-links { gap: 14px; min-width: 0; }
+      .social-links a:not(:first-child) { display: none; }
+      .menu-panel { left: 20px; top: -18px; }
+      .hero, .layout, .search-row { grid-template-columns: 1fr; }
+      .hero-card, .side-panel { border-left: 0; padding-left: 0; }
+      .modules { grid-template-columns: 1fr 1fr; }
+      .splash {
+        padding: 130px 22px 0;
+      }
+      .welcome-panel {
+        right: 20px;
+        top: 150px;
+        width: min(360px, calc(100vw - 40px));
+        min-height: 320px;
+        padding: 24px 22px 22px;
+      }
+      .quick-panel {
+        position: relative;
+        left: auto;
+        top: auto;
+        width: auto;
+        min-height: auto;
+        margin-top: 430px;
+        padding: 24px 22px 22px;
+      }
+      .welcome-panel .dash {
+        margin: 70px 0 26px;
+      }
+      .splash-title-row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        white-space: normal;
+        gap: 18px;
+      }
+      .splash-title {
+        font-size: clamp(72px, 23vw, 132px);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .brand-text { font-size: 17px; white-space: normal; }
+      .site-header { padding-top: 24px; }
+      .brand { top: 2px; }
+      .modules { grid-template-columns: 1fr; }
+      .module-link { border-right: 0; border-bottom: 1px solid var(--line); }
+      .form-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="menu-wrap">
+        <button class="menu-trigger" type="button" aria-controls="menuPanel" aria-label="Open navigation">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 7h16"></path>
+            <path d="M4 12h16"></path>
+            <path d="M4 17h16"></path>
+          </svg>
+        </button>
+        <nav class="menu-panel" id="menuPanel" aria-label="Primary navigation">
+          <div class="menu-list">
+            <a href="#overview">Index</a>
+            <a href="about.html">About</a>
+            <a href="#learning">Archive</a>
+            <a href="#resume">Resume</a>
+            <a href="#tasks">Plans</a>
+            <a href="#interests">Interests</a>
+          </div>
+          <div class="menu-time" aria-live="polite">
+            <div id="menuMonth">May</div>
+            <div id="menuDay">Thursday</div>
+            <div id="menuClock">00:00:00</div>
+            <div class="muted">GMT +8</div>
+          </div>
+        </nav>
+      </div>
+      <a class="brand" href="#overview">
+        <div class="brand-text">
+          <img class="brand-mark" src="assets/kid-wordmark-direct.png" alt="K.I.D">
+        </div>
+      </a>
+      <div class="social-links" aria-label="Quick links">
+        <a href="mailto:kongzirui2004@163.com" aria-label="Email">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect width="20" height="16" x="2" y="4" rx="2"></rect>
+            <path d="m22 7-8.97 5.7a2 2 0 0 1-2.06 0L2 7"></path>
+          </svg>
+        </a>
+        <a href="https://www.linkedin.com/in/raykong626" target="_blank" rel="noreferrer" aria-label="LinkedIn">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"></path>
+            <rect width="4" height="12" x="2" y="9"></rect>
+            <circle cx="4" cy="4" r="2"></circle>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <section class="splash" aria-label="K.I.D. cover">
+    <aside class="quick-panel" aria-label="Quick links">
+      <h2>Explore the personal development collection.</h2>
+      <ul class="quick-list">
+        <li><a href="#learning">Learning Records</a></li>
+        <li><a href="#resume">Resume Archive</a></li>
+        <li><a href="#tasks">Task Plans</a></li>
+        <li><a href="#interests">Interest Fields</a></li>
+      </ul>
+    </aside>
+    <aside class="welcome-panel" aria-label="Welcome">
+      <h2>Welcome to Kongzirui's Personal Development Archive.</h2>
+      <span class="dash" aria-hidden="true"></span>
+      <p>A quiet space for learning records, plans, interests, and long-term growth.</p>
+    </aside>
+  </section>
+
+  <main id="overview">
+    <section class="hero">
+      <div>
+        <p class="eyebrow">K.I.D. Archive</p>
+        <h1 data-i18n="heroTitle">一个关于学习、简历、计划与兴趣的学术型个人集合。</h1>
+        <p data-i18n="heroText">K.I.D. 是孔子睿的个人发展网站，用严肃、清晰、可持续的方式记录学习成果、任务计划、兴趣领域与个人简历。</p>
+      </div>
+      <aside class="hero-card">
+        <h2 data-i18n="heroCardTitle">Current Focus</h2>
+        <p id="featuredText">正在读取精选记录。</p>
+      </aside>
+    </section>
+
+    <section class="search-row" aria-label="K.I.D. search">
+      <input class="field" id="searchInput" type="search" placeholder="搜索学习记录、兴趣领域、简历关键词">
+      <select class="select" id="fieldFilter"></select>
+      <button class="button" id="searchButton" data-i18n="searchButton">搜索</button>
+    </section>
+
+    <section class="modules" aria-label="K.I.D. modules">
+      <a class="module-link" href="#resume"><b data-i18n="moduleResume">个人简历</b><span data-i18n="moduleResumeText">教育、技能、项目与公开输出。</span></a>
+      <a class="module-link" href="#tasks"><b data-i18n="moduleTasks">任务计划</b><span data-i18n="moduleTasksText">阶段目标、待办事项与执行节奏。</span></a>
+      <a class="module-link" href="#interests"><b data-i18n="moduleInterests">兴趣领域</b><span data-i18n="moduleInterestsText">长期关注的问题、学科与方向。</span></a>
+      <a class="module-link" href="#learning"><b data-i18n="moduleLearning">学习记录</b><span data-i18n="moduleLearningText">文章式记录、方法总结与学习证据。</span></a>
+    </section>
+
+    <section class="layout">
+      <div>
+        <section class="section" id="learning">
+          <div class="section-header">
+            <h2 data-i18n="learningTitle">学习记录</h2>
+            <span id="recordCount">0 条记录</span>
+          </div>
+          <div class="record-list" id="recordList"></div>
+        </section>
+      </div>
+
+      <aside class="side-panel">
+        <section class="panel" id="resume">
+          <div class="panel-title">
+            <h2 data-i18n="resumeTitle">个人简历</h2>
+            <button class="tiny-button" id="addResumeButton" data-i18n="addButton">添加</button>
+          </div>
+          <ul class="compact-list" id="resumeList"></ul>
+        </section>
+
+        <section class="panel" id="tasks">
+          <div class="panel-title">
+            <h2 data-i18n="tasksTitle">任务计划</h2>
+            <button class="tiny-button" id="addTaskButton" data-i18n="addButton">添加</button>
+          </div>
+          <ul class="compact-list" id="taskList"></ul>
+        </section>
+
+        <section class="panel" id="interests">
+          <div class="panel-title">
+            <h2 data-i18n="interestsTitle">兴趣领域</h2>
+            <button class="tiny-button" id="addInterestButton" data-i18n="addButton">添加</button>
+          </div>
+          <ul class="compact-list" id="interestList"></ul>
+        </section>
+      </aside>
+    </section>
+
+    <section class="database-bar" id="database">
+      <span id="databaseStatus">数据库：准备中</span>
+      <div>
+        <button class="subtle-button" id="addRecordButton" data-i18n="addRecord">新增学习记录</button>
+        <button class="subtle-button" id="exportButton" data-i18n="exportButton">导出 JSON</button>
+        <label class="subtle-button" for="importInput" data-i18n="importButton">导入 JSON</label>
+        <input id="importInput" type="file" accept="application/json" hidden>
+        <button class="danger-button" id="resetButton" data-i18n="resetButton">重置示例</button>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal" id="modal" aria-hidden="true">
+    <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="dialog-header">
+        <h2 id="modalTitle">编辑</h2>
+        <button class="tiny-button" id="closeModalButton">关闭</button>
+      </div>
+      <div class="dialog-body" id="modalBody"></div>
+      <div class="dialog-footer" id="modalFooter"></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status"></div>
+
+  <script>
+    const SUPABASE_URL = "";
+    const SUPABASE_ANON_KEY = "";
+    const CLOUD_ENABLED = SUPABASE_URL.startsWith("https://") && SUPABASE_ANON_KEY.length > 20;
+    const LOCAL_KEY = "kid-super-collection";
+
+    let currentLang = localStorage.getItem("kidLanguage") || "zh";
+    let db = null;
+    let mode = "local";
+    let state = { papers: [], queue: [], deadlines: [], activities: [] };
+
+    const i18n = {
+      zh: {
+        navHome: "首页", navResume: "个人简历", navTasks: "任务计划", navInterests: "兴趣领域", navLearning: "学习记录",
+        heroTitle: "一个关于学习、简历、计划与兴趣的学术型个人集合。",
+        heroText: "K.I.D. 是孔子睿的个人发展网站，用严肃、清晰、可持续的方式记录学习成果、任务计划、兴趣领域与个人简历。",
+        heroCardTitle: "当前重点", searchButton: "搜索",
+        moduleResume: "个人简历", moduleResumeText: "教育、技能、项目与公开输出。",
+        moduleTasks: "任务计划", moduleTasksText: "阶段目标、待办事项与执行节奏。",
+        moduleInterests: "兴趣领域", moduleInterestsText: "长期关注的问题、学科与方向。",
+        moduleLearning: "学习记录", moduleLearningText: "文章式记录、方法总结与学习证据。",
+        learningTitle: "学习记录", resumeTitle: "个人简历", tasksTitle: "任务计划", interestsTitle: "兴趣领域",
+        addButton: "添加", addRecord: "新增学习记录", exportButton: "导出 JSON", importButton: "导入 JSON", resetButton: "重置示例",
+        searchPlaceholder: "搜索学习记录、兴趣领域、简历关键词", allFields: "全部领域",
+        fields: { ai: "人工智能与技术", writing: "学术写作与表达", business: "商业与管理", arts: "艺术与媒介", method: "方法论与自我发展" },
+        dbLocal: "数据库：本地备用模式，数据只在当前浏览器",
+        dbCloud: "数据库：Supabase 云数据库已连接，所有访客共享 K.I.D. 数据"
+      },
+      en: {
+        navHome: "Home", navResume: "Resume", navTasks: "Tasks", navInterests: "Interests", navLearning: "Learning",
+        heroTitle: "A scholarly personal collection for learning, resume, plans, and interests.",
+        heroText: "K.I.D. is Kongzirui's personal development website, built to record learning outputs, task plans, interests, and resume materials with clarity and continuity.",
+        heroCardTitle: "Current Focus", searchButton: "Search",
+        moduleResume: "Resume", moduleResumeText: "Education, skills, projects, and public outputs.",
+        moduleTasks: "Task Plans", moduleTasksText: "Stage goals, open tasks, and execution rhythm.",
+        moduleInterests: "Interests", moduleInterestsText: "Long-term questions, fields, and directions.",
+        moduleLearning: "Learning Records", moduleLearningText: "Essay-like notes, method summaries, and learning evidence.",
+        learningTitle: "Learning Records", resumeTitle: "Resume", tasksTitle: "Task Plans", interestsTitle: "Interests",
+        addButton: "Add", addRecord: "Add learning record", exportButton: "Export JSON", importButton: "Import JSON", resetButton: "Reset sample",
+        searchPlaceholder: "Search learning records, interests, resume keywords", allFields: "All fields",
+        fields: { ai: "AI & Technology", writing: "Academic Writing", business: "Business & Management", arts: "Arts & Media", method: "Methods & Self-development" },
+        dbLocal: "Database: local fallback, data stays in this browser",
+        dbCloud: "Database: Supabase cloud connected, all visitors share K.I.D. data"
+      }
+    };
+
+    const sample = {
+      papers: [
+        { id: 1, title: "AI 辅助学习系统的个人实践笔记", authors: "孔子睿", venue: "Learning Records", year: 2026, field: "ai", status: "learning", citations: 48, tags: "AI, 学习系统, 个人知识库", abstract: "记录如何使用 AI 工具整理资料、拆解任务、辅助写作与复盘，并逐步形成稳定的个人学习流程。", note: "作为 K.I.D. 学习记录的核心样例。" },
+        { id: 2, title: "学术写作中的论证结构训练", authors: "孔子睿", venue: "Academic Writing", year: 2025, field: "writing", status: "review", citations: 36, tags: "写作, 论证, 结构化表达", abstract: "以论文式结构训练表达：问题提出、证据组织、概念界定、反驳处理与结论收束。", note: "可扩展为公开学习分享文章。" },
+        { id: 3, title: "商业分析与个人项目管理方法", authors: "孔子睿", venue: "Business & Management", year: 2024, field: "business", status: "integrated", citations: 42, tags: "商业分析, 项目管理, 决策", abstract: "把商业分析工具应用到个人项目：目标拆解、资源约束、风险判断、阶段复盘与结果呈现。", note: "已沉淀为阶段性学习方法。" }
+      ],
+      queue: [
+        { id: 1, title: "整理个人简历版本 v1", paper: "个人简历", detail: "补充教育经历、项目经历和技能关键词", due: "今天", completed: false },
+        { id: 2, title: "完成 AI 学习系统案例复盘", paper: "AI 辅助学习系统", detail: "保留 3 个可验证样本", due: "周五", completed: false }
+      ],
+      deadlines: [
+        { id: 1, date: "Profile", title: "孔子睿 / Kongzirui", detail: "关注学术写作、AI 工具、商业分析、个人知识管理与长期发展。" },
+        { id: 2, date: "Skills", title: "核心能力", detail: "结构化表达、研究整理、任务规划、跨领域学习、项目复盘。" },
+        { id: 3, date: "Output", title: "公开输出方向", detail: "学习记录、方法论总结、兴趣研究、个人项目档案。" }
+      ],
+      activities: [
+        { id: 1, title: "人工智能与学习工具", body: "关注 AI 如何提升资料整理、写作、复盘和知识管理效率。", date: "Field" },
+        { id: 2, title: "学术表达与公共写作", body: "关注如何把复杂问题写清楚，并形成可分享的观点输出。", date: "Field" },
+        { id: 3, title: "商业、媒介与个人发展", body: "关注个体选择、组织逻辑、媒介表达和长期成长路径。", date: "Field" }
+      ]
+    };
+
+    const $ = (selector) => document.querySelector(selector);
+
+    function uid(items) {
+      return Math.max(0, ...items.map((item) => Number(item.id) || 0)) + 1;
+    }
+
+    async function initDB() {
+      if (CLOUD_ENABLED) {
+        const { createClient } = await import("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm");
+        db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        mode = "cloud";
+        await loadCloud();
+        if (!state.papers.length) {
+          state = structuredClone(sample);
+          await saveAllCloud();
+        }
+        return;
+      }
+      mode = "local";
+      state = JSON.parse(localStorage.getItem(LOCAL_KEY) || "null") || structuredClone(sample);
+      saveLocal();
+    }
+
+    function saveLocal() {
+      if (mode === "local") localStorage.setItem(LOCAL_KEY, JSON.stringify(state));
+    }
+
+    async function loadCloud() {
+      for (const store of ["papers", "queue", "deadlines", "activities"]) {
+        const { data, error } = await db.from(store).select("*").order("id", { ascending: true });
+        if (error) throw error;
+        state[store] = data || [];
+      }
+    }
+
+    async function saveAllCloud() {
+      for (const store of ["papers", "queue", "deadlines", "activities"]) {
+        await db.from(store).delete().gte("id", 0);
+        if (state[store].length) await db.from(store).insert(state[store].map(({ id, ...rest }) => rest));
+      }
+      await loadCloud();
+    }
+
+    async function addItem(store, item) {
+      if (mode === "cloud") {
+        const { error } = await db.from(store).insert(item);
+        if (error) throw error;
+        await loadCloud();
+      } else {
+        state[store].push({ id: uid(state[store]), ...item });
+        saveLocal();
+      }
+      render();
+    }
+
+    async function updateItem(store, id, item) {
+      if (mode === "cloud") {
+        const { error } = await db.from(store).update(item).eq("id", Number(id));
+        if (error) throw error;
+        await loadCloud();
+      } else {
+        state[store] = state[store].map((entry) => Number(entry.id) === Number(id) ? { ...entry, ...item, id: Number(id) } : entry);
+        saveLocal();
+      }
+      render();
+    }
+
+    async function deleteItem(store, id) {
+      if (mode === "cloud") {
+        const { error } = await db.from(store).delete().eq("id", Number(id));
+        if (error) throw error;
+        await loadCloud();
+      } else {
+        state[store] = state[store].filter((entry) => Number(entry.id) !== Number(id));
+        saveLocal();
+      }
+      render();
+    }
+
+    function text(key) { return i18n[currentLang][key]; }
+    function fields() { return i18n[currentLang].fields; }
+    function escapeHTML(value = "") {
+      return String(value).replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#039;" }[char]));
+    }
+
+    function toast(message) {
+      $("#toast").textContent = message;
+      $("#toast").classList.add("show");
+      clearTimeout(toast.timer);
+      toast.timer = setTimeout(() => $("#toast").classList.remove("show"), 2200);
+    }
+
+    function applyLanguage() {
+      document.documentElement.lang = currentLang === "zh" ? "zh-CN" : "en";
+      document.querySelectorAll("[data-i18n]").forEach((node) => node.textContent = text(node.dataset.i18n));
+      const languageButton = $("#languageButton");
+      if (languageButton) languageButton.textContent = currentLang === "zh" ? "EN" : "中文";
+      $("#searchInput").placeholder = text("searchPlaceholder");
+      $("#fieldFilter").innerHTML = `<option value="all">${text("allFields")}</option>` + Object.entries(fields()).map(([value, label]) => `<option value="${value}">${label}</option>`).join("");
+      render();
+    }
+
+    function filteredRecords() {
+      const query = $("#searchInput").value.trim().toLowerCase();
+      const field = $("#fieldFilter").value;
+      return state.papers.filter((record) => {
+        const haystack = `${record.title} ${record.authors} ${record.venue} ${record.tags} ${record.abstract} ${record.note}`.toLowerCase();
+        return haystack.includes(query) && (field === "all" || record.field === field);
+      });
+    }
+
+    function render() {
+      renderRecords();
+      renderCompact("queue", "#taskList", true);
+      renderCompact("deadlines", "#resumeList", false);
+      renderCompact("activities", "#interestList", false);
+      const focus = state.papers[0];
+      $("#featuredText").textContent = focus ? `${focus.title} — ${focus.abstract}` : (currentLang === "zh" ? "暂无精选记录。" : "No featured record yet.");
+      $("#databaseStatus").textContent = mode === "cloud" ? text("dbCloud") : text("dbLocal");
+    }
+
+    function renderRecords() {
+      const records = filteredRecords();
+      $("#recordCount").textContent = currentLang === "zh" ? `${records.length} 条记录` : `${records.length} records`;
+      $("#recordList").innerHTML = records.map((record) => {
+        const tags = String(record.tags || "").split(",").map((tag) => tag.trim()).filter(Boolean);
+        return `
+          <article class="record">
+            <h3>${escapeHTML(record.title)}</h3>
+            <div class="meta">${escapeHTML(record.authors || "Kongzirui")} · ${escapeHTML(record.venue || "K.I.D.")} · ${escapeHTML(record.year || "")} · ${fields()[record.field] || ""}</div>
+            <p class="summary">${escapeHTML(record.abstract || "")}</p>
+            <div class="tag-row">${tags.map((tag) => `<span class="tag">${escapeHTML(tag)}</span>`).join("")}</div>
+            <div class="record-actions">
+              <button class="tiny-button" data-action="edit-record" data-id="${record.id}">${currentLang === "zh" ? "编辑" : "Edit"}</button>
+              <button class="tiny-button" data-action="task-from-record" data-id="${record.id}">${currentLang === "zh" ? "加入任务" : "Plan task"}</button>
+              <button class="tiny-button" data-action="delete-record" data-id="${record.id}">${currentLang === "zh" ? "删除" : "Delete"}</button>
+            </div>
+          </article>
+        `;
+      }).join("") || `<article class="record"><p class="summary">${currentLang === "zh" ? "暂无匹配记录。" : "No matching records."}</p></article>`;
+    }
+
+    function renderCompact(store, selector, withCheckbox) {
+      const empty = currentLang === "zh" ? "暂无内容。" : "No entries yet.";
+      $(selector).innerHTML = state[store].map((item) => `
+        <li class="compact-item">
+          <b>${withCheckbox ? `<input type="checkbox" data-action="toggle-task" data-id="${item.id}" ${item.completed ? "checked" : ""}>` : ""}${escapeHTML(item.title)}</b>
+          <span>${escapeHTML(item.paper || item.date || "")}${item.detail || item.body ? " · " : ""}${escapeHTML(item.detail || item.body || "")}</span>
+          <div class="record-actions">
+            <button class="tiny-button" data-action="edit-${store}" data-id="${item.id}">${currentLang === "zh" ? "编辑" : "Edit"}</button>
+            <button class="tiny-button" data-action="delete-${store}" data-id="${item.id}">${currentLang === "zh" ? "删除" : "Delete"}</button>
+          </div>
+        </li>
+      `).join("") || `<li class="compact-item"><span>${empty}</span></li>`;
+    }
+
+    function openModal(title, body, footer) {
+      $("#modalTitle").textContent = title;
+      $("#modalBody").innerHTML = body;
+      $("#modalFooter").innerHTML = footer;
+      $("#modal").classList.add("open");
+      $("#modal").setAttribute("aria-hidden", "false");
+    }
+
+    function closeModal() {
+      $("#modal").classList.remove("open");
+      $("#modal").setAttribute("aria-hidden", "true");
+    }
+
+    function recordForm(item = {}) {
+      return `
+        <form id="recordForm" class="form-grid">
+          <input type="hidden" name="id" value="${item.id || ""}">
+          <div class="form-row full"><label>${currentLang === "zh" ? "标题" : "Title"}</label><input class="field" name="title" required value="${escapeHTML(item.title || "")}"></div>
+          <div class="form-row"><label>${currentLang === "zh" ? "栏目" : "Section"}</label><input class="field" name="venue" value="${escapeHTML(item.venue || "Learning Records")}"></div>
+          <div class="form-row"><label>${currentLang === "zh" ? "年份" : "Year"}</label><input class="field" name="year" type="number" value="${Number(item.year || new Date().getFullYear())}"></div>
+          <div class="form-row"><label>${currentLang === "zh" ? "领域" : "Field"}</label><select class="select" name="field">${Object.entries(fields()).map(([value, label]) => `<option value="${value}" ${item.field === value ? "selected" : ""}>${label}</option>`).join("")}</select></div>
+          <div class="form-row"><label>${currentLang === "zh" ? "成长指数" : "Growth index"}</label><input class="field" name="citations" type="number" value="${Number(item.citations || 0)}"></div>
+          <div class="form-row full"><label>${currentLang === "zh" ? "关键词" : "Keywords"}</label><input class="field" name="tags" value="${escapeHTML(item.tags || "")}"></div>
+          <div class="form-row full"><label>${currentLang === "zh" ? "概述" : "Summary"}</label><textarea name="abstract" required>${escapeHTML(item.abstract || "")}</textarea></div>
+          <div class="form-row full"><label>${currentLang === "zh" ? "笔记" : "Notes"}</label><textarea name="note">${escapeHTML(item.note || "")}</textarea></div>
+        </form>
+      `;
+    }
+
+    function simpleForm(store, item = {}) {
+      const title = currentLang === "zh" ? "标题" : "Title";
+      const detail = currentLang === "zh" ? "说明" : "Detail";
+      return `
+        <form id="simpleForm" class="form-grid">
+          <input type="hidden" name="id" value="${item.id || ""}">
+          <input type="hidden" name="store" value="${store}">
+          <div class="form-row full"><label>${title}</label><input class="field" name="title" required value="${escapeHTML(item.title || "")}"></div>
+          <div class="form-row"><label>${currentLang === "zh" ? "分类/日期" : "Category/date"}</label><input class="field" name="date" value="${escapeHTML(item.date || item.due || "")}"></div>
+          <div class="form-row full"><label>${detail}</label><textarea name="detail">${escapeHTML(item.detail || item.body || "")}</textarea></div>
+        </form>
+      `;
+    }
+
+    async function saveRecord() {
+      const form = Object.fromEntries(new FormData($("#recordForm")).entries());
+      const item = { ...form, authors: "孔子睿", citations: Number(form.citations || 0) };
+      if (form.id) await updateItem("papers", form.id, item);
+      else await addItem("papers", item);
+      closeModal();
+      toast(currentLang === "zh" ? "学习记录已保存" : "Learning record saved");
+    }
+
+    async function saveSimple() {
+      const data = Object.fromEntries(new FormData($("#simpleForm")).entries());
+      const store = data.store;
+      const item = store === "activities"
+        ? { title: data.title, date: data.date, body: data.detail }
+        : store === "queue"
+          ? { title: data.title, due: data.date, detail: data.detail, completed: false }
+          : { title: data.title, date: data.date, detail: data.detail };
+      if (data.id) await updateItem(store, data.id, item);
+      else await addItem(store, item);
+      closeModal();
+      toast(currentLang === "zh" ? "已保存" : "Saved");
+    }
+
+    function bindEvents() {
+      const languageButton = $("#languageButton");
+      if (languageButton) {
+        languageButton.addEventListener("click", () => {
+          currentLang = currentLang === "zh" ? "en" : "zh";
+          localStorage.setItem("kidLanguage", currentLang);
+          applyLanguage();
+        });
+      }
+      $("#searchInput").addEventListener("input", renderRecords);
+      $("#fieldFilter").addEventListener("change", renderRecords);
+      $("#searchButton").addEventListener("click", renderRecords);
+      $("#addRecordButton").addEventListener("click", () => openModal(currentLang === "zh" ? "新增学习记录" : "Add learning record", recordForm(), modalFooter("save-record")));
+      $("#addTaskButton").addEventListener("click", () => openModal(currentLang === "zh" ? "添加任务" : "Add task", simpleForm("queue"), modalFooter("save-simple")));
+      $("#addResumeButton").addEventListener("click", () => openModal(currentLang === "zh" ? "添加简历条目" : "Add resume entry", simpleForm("deadlines"), modalFooter("save-simple")));
+      $("#addInterestButton").addEventListener("click", () => openModal(currentLang === "zh" ? "添加兴趣领域" : "Add interest field", simpleForm("activities"), modalFooter("save-simple")));
+      $("#closeModalButton").addEventListener("click", closeModal);
+      $("#modal").addEventListener("click", (event) => { if (event.target === $("#modal")) closeModal(); });
+      document.addEventListener("click", handleAction);
+      $("#exportButton").addEventListener("click", exportData);
+      $("#importInput").addEventListener("change", importData);
+      $("#resetButton").addEventListener("click", () => {
+        if (confirm(currentLang === "zh" ? "重置为示例数据？" : "Reset to sample data?")) {
+          state = structuredClone(sample);
+          saveLocal();
+          render();
+        }
+      });
+    }
+
+    function updateMenuClock() {
+      const now = new Date();
+      const monthNode = $("#menuMonth");
+      const dayNode = $("#menuDay");
+      const clockNode = $("#menuClock");
+      if (monthNode) monthNode.textContent = now.toLocaleString("en-US", { month: "short" });
+      if (dayNode) dayNode.textContent = now.toLocaleString("en-US", { weekday: "long" });
+      if (clockNode) clockNode.textContent = now.toLocaleTimeString("en-GB", { hour12: false });
+    }
+
+    function updateHeaderTone() {
+      const header = $(".site-header");
+      const y = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
+      if (header) header.classList.toggle("scrolled", y > 24);
+    }
+
+    function modalFooter(action) {
+      return `<button class="subtle-button" data-action="close-modal">${currentLang === "zh" ? "取消" : "Cancel"}</button><button class="button" data-action="${action}">${currentLang === "zh" ? "保存" : "Save"}</button>`;
+    }
+
+    async function handleAction(event) {
+      const action = event.target.dataset.action;
+      if (!action) return;
+      const id = event.target.dataset.id;
+      if (action === "close-modal") closeModal();
+      if (action === "save-record") await saveRecord();
+      if (action === "save-simple") await saveSimple();
+      if (action === "edit-record") openModal(currentLang === "zh" ? "编辑学习记录" : "Edit learning record", recordForm(state.papers.find((item) => Number(item.id) === Number(id))), modalFooter("save-record"));
+      if (action === "task-from-record") {
+        const record = state.papers.find((item) => Number(item.id) === Number(id));
+        await addItem("queue", { title: currentLang === "zh" ? `任务：${record.title}` : `Task: ${record.title}`, paper: record.title, detail: currentLang === "zh" ? "提取下一步任务和复盘点" : "Extract next task and reflection point", due: "TBD", completed: false });
+      }
+      if (action === "delete-record" && confirm(currentLang === "zh" ? "删除这条学习记录？" : "Delete this record?")) await deleteItem("papers", id);
+      if (action === "edit-queue") openModal(currentLang === "zh" ? "编辑任务" : "Edit task", simpleForm("queue", state.queue.find((item) => Number(item.id) === Number(id))), modalFooter("save-simple"));
+      if (action === "edit-deadlines") openModal(currentLang === "zh" ? "编辑简历条目" : "Edit resume entry", simpleForm("deadlines", state.deadlines.find((item) => Number(item.id) === Number(id))), modalFooter("save-simple"));
+      if (action === "edit-activities") openModal(currentLang === "zh" ? "编辑兴趣领域" : "Edit interest", simpleForm("activities", state.activities.find((item) => Number(item.id) === Number(id))), modalFooter("save-simple"));
+      if (action === "delete-queue") await deleteItem("queue", id);
+      if (action === "delete-deadlines") await deleteItem("deadlines", id);
+      if (action === "delete-activities") await deleteItem("activities", id);
+      if (action === "toggle-task") {
+        const task = state.queue.find((item) => Number(item.id) === Number(id));
+        if (task) await updateItem("queue", id, { ...task, completed: event.target.checked });
+      }
+    }
+
+    function exportData() {
+      const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "kid-development-data.json";
+      link.click();
+      URL.revokeObjectURL(url);
+    }
+
+    async function importData(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      state = JSON.parse(await file.text());
+      saveLocal();
+      render();
+      event.target.value = "";
+    }
+
+    async function init() {
+      try {
+        await initDB();
+        bindEvents();
+        updateMenuClock();
+        setInterval(updateMenuClock, 1000);
+        updateHeaderTone();
+        window.addEventListener("scroll", updateHeaderTone, { passive: true });
+        window.addEventListener("hashchange", updateHeaderTone);
+        requestAnimationFrame(updateHeaderTone);
+        setTimeout(updateHeaderTone, 120);
+        applyLanguage();
+      } catch (error) {
+        console.error(error);
+        toast(currentLang === "zh" ? "数据库连接失败" : "Database connection failed");
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>
